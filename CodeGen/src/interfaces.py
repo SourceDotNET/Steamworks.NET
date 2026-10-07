@@ -62,7 +62,6 @@ g_TypeDict = {
     "ISteamMatchmakingPingResponse *": "IntPtr",
     "ISteamMatchmakingPlayersResponse *": "IntPtr",
     "ISteamMatchmakingRulesResponse *": "IntPtr",
-    "ISteamMatchmakingServerFriendsResponse *": "IntPtr",
     #"MatchMakingKeyValuePair_t **": "IntPtr", HACK in parse_args()
 
     "ControllerAnalogActionData_t": "InputAnalogActionData_t",

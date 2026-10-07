@@ -932,6 +932,7 @@ public:
 		k_EGameIDTypeApp		= 0,
 		k_EGameIDTypeGameMod	= 1,
 		k_EGameIDTypeShortcut	= 2,
+		k_EGameIDTypeP2P		= 3,
 	};
 
 	CGameID()
@@ -970,24 +971,6 @@ public:
 		m_gameID.m_nAppID = nAppID;
 		m_gameID.m_nModID = nModID;
 		m_gameID.m_nType = nType;
-	}
-
-	// Not validating anything .. use IsValid()
-	// Only for apps and shortcuts
-	explicit CGameID( uint32 nID, CGameID::EGameIDType nType )
-	{
-		m_ulGameID = 0;
-
-		if ( nType == k_EGameIDTypeApp )
-		{
-			m_gameID.m_nType = nType;
-			m_gameID.m_nAppID = nID;
-		}
-		else if ( nType == k_EGameIDTypeShortcut )
-		{
-			m_gameID.m_nType = nType;
-			m_gameID.m_nModID = nID;
-		}
 	}
 
 	CGameID( const CGameID &that )
@@ -1031,6 +1014,11 @@ public:
 		return ( m_gameID.m_nType == k_EGameIDTypeShortcut );
 	}
 
+	bool IsP2PFile() const
+	{
+		return ( m_gameID.m_nType == k_EGameIDTypeP2P );
+	}
+
 	bool IsSteamApp() const
 	{
 		return ( m_gameID.m_nType == k_EGameIDTypeApp );
@@ -1038,13 +1026,17 @@ public:
 		
 	uint32 ModID() const
 	{
-		return ( m_gameID.m_nType == k_EGameIDTypeShortcut ) ? 0: m_gameID.m_nModID;
+		return m_gameID.m_nModID;
 	}
 
-	uint32 AppID() const
+#if !defined(VALVE_SHORTCUT_DEBUG)
+	uint32 AppID( bool = false ) const
 	{
-		return ( m_gameID.m_nType == k_EGameIDTypeShortcut ) ? m_gameID.m_nModID : m_gameID.m_nAppID;
+		return m_gameID.m_nAppID;
 	}
+#else
+	uint32 AppID( bool bShortcutOK = false ) const;
+#endif
 
 	bool operator == ( const CGameID &rhs ) const
 	{
@@ -1076,6 +1068,9 @@ public:
 			return m_gameID.m_nAppID == k_uAppIdInvalid
 				&& (m_gameID.m_nModID & 0x80000000)
 				&& m_gameID.m_nModID >= (5000 | 0x80000000); // k_unMaxExpectedLocalAppId - shortcuts are pushed beyond that range
+
+		case k_EGameIDTypeP2P:
+			return m_gameID.m_nAppID == k_uAppIdInvalid && (m_gameID.m_nModID & 0x80000000);
 
 		default:
 			return false;

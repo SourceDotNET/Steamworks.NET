@@ -470,12 +470,6 @@ namespace Steamworks {
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamApps_SetActiveBeta", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static extern bool ISteamApps_SetActiveBeta(IntPtr instancePtr, InteropHelp.UTF8StringHandle pchBetaName);
-
-		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamApps_SetGamePerformanceSetting", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void ISteamApps_SetGamePerformanceSetting(IntPtr instancePtr, EGamePerformanceSetting setting);
-
-		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamApps_SetGameRenderResolution", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void ISteamApps_SetGameRenderResolution(IntPtr instancePtr, uint unWidth, uint unHeight);
 #endregion
 #region SteamClient
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamClient_CreateSteamPipe", CallingConvention = CallingConvention.Cdecl)]
@@ -1691,9 +1685,6 @@ namespace Steamworks {
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamMatchmakingServers_ServerRules", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int ISteamMatchmakingServers_ServerRules(IntPtr instancePtr, uint unIP, ushort usPort, IntPtr pRequestServersResponse);
 
-		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamMatchmakingServers_ServerFriends", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int ISteamMatchmakingServers_ServerFriends(IntPtr instancePtr, uint unIP, ushort usPort, IntPtr pRequestServersResponse);
-
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamMatchmakingServers_CancelServerQuery", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void ISteamMatchmakingServers_CancelServerQuery(IntPtr instancePtr, HServerQuery hServerQuery);
 #endregion
@@ -1917,7 +1908,7 @@ namespace Steamworks {
 		public static extern EResult ISteamNetworkingSockets_SendMessageToConnection(IntPtr instancePtr, HSteamNetConnection hConn, IntPtr pData, uint cbData, int nSendFlags, out long pOutMessageNumber);
 
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamNetworkingSockets_SendMessages", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void ISteamNetworkingSockets_SendMessages(IntPtr instancePtr, int nMessages, [In, Out] IntPtr[] pMessages, [In, Out] long[] pOutMessageNumberOrResult, [MarshalAs(UnmanagedType.I1)] bool bDeleteFailedMessages);
+		public static extern void ISteamNetworkingSockets_SendMessages(IntPtr instancePtr, int nMessages, [In, Out] IntPtr[] pMessages, [In, Out] long[] pOutMessageNumberOrResult);
 
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamNetworkingSockets_FlushMessagesOnConnection", CallingConvention = CallingConvention.Cdecl)]
 		public static extern EResult ISteamNetworkingSockets_FlushMessagesOnConnection(IntPtr instancePtr, HSteamNetConnection hConn);
@@ -1941,7 +1932,7 @@ namespace Steamworks {
 
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamNetworkingSockets_CreateSocketPair", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.I1)]
-		public static extern bool ISteamNetworkingSockets_CreateSocketPair(IntPtr instancePtr, out HSteamNetConnection pOutConnection1, out HSteamNetConnection pOutConnection2, [MarshalAs(UnmanagedType.I1)] bool bUseNetworkLoopback, ref SteamNetworkingIdentity pPeerIdentity1, ref SteamNetworkingIdentity pPeerIdentity2);
+		public static extern bool ISteamNetworkingSockets_CreateSocketPair(IntPtr instancePtr, out HSteamNetConnection pOutConnection1, out HSteamNetConnection pOutConnection2, [MarshalAs(UnmanagedType.I1)] bool bUseNetworkLoopback, ref SteamNetworkingIdentity pIdentity1, ref SteamNetworkingIdentity pIdentity2);
 
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamNetworkingSockets_ConfigureConnectionLanes", CallingConvention = CallingConvention.Cdecl)]
 		public static extern EResult ISteamNetworkingSockets_ConfigureConnectionLanes(IntPtr instancePtr, HSteamNetConnection hConn, int nNumLanes, [In, Out] int[] pLanePriorities, [In, Out] ushort[] pLaneWeights);
@@ -3233,6 +3224,10 @@ namespace Steamworks {
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_GetIPv6ConnectivityState", CallingConvention = CallingConvention.Cdecl)]
 		public static extern ESteamIPv6ConnectivityState ISteamUtils_GetIPv6ConnectivityState(IntPtr instancePtr, ESteamIPv6ConnectivityProtocol eProtocol);
 
+		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_IsSteamRunningOnSteamDeck", CallingConvention = CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static extern bool ISteamUtils_IsSteamRunningOnSteamDeck(IntPtr instancePtr);
+
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_ShowFloatingGamepadTextInput", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static extern bool ISteamUtils_ShowFloatingGamepadTextInput(IntPtr instancePtr, EFloatingGamepadTextInputMode eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight);
@@ -3247,16 +3242,6 @@ namespace Steamworks {
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_DismissGamepadTextInput", CallingConvention = CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static extern bool ISteamUtils_DismissGamepadTextInput(IntPtr instancePtr);
-
-		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_IsRunningOnSteamHardware", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ESteamHardwareType ISteamUtils_IsRunningOnSteamHardware(IntPtr instancePtr);
-
-		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_GetSteamHardwareDefaultConfig", CallingConvention = CallingConvention.Cdecl)]
-		public static extern ESteamHardwareDefaultConfig ISteamUtils_GetSteamHardwareDefaultConfig(IntPtr instancePtr);
-
-		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamUtils_IsRunningUnderProton", CallingConvention = CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.I1)]
-		public static extern bool ISteamUtils_IsRunningUnderProton(IntPtr instancePtr);
 #endregion
 #region SteamVideo
 		[DllImport(NativeLibraryName, EntryPoint = "SteamAPI_ISteamVideo_GetVideoURL", CallingConvention = CallingConvention.Cdecl)]
